@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Underweight Advice - MyBody Index</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+      <div class="logo">MyBody Index</div>
+      <div class="menu">
+          <a href="index.html">Home</a>
+          <a href="calculator.html">Calculator</a>
+          <a href="history.html">History</a>
+          <a href="tips.html">Health Tips</a>
+      </div>
+  </nav>
+
+  <br>
+
+  <main>
+    <div class="card-container" style="max-width: 980px;">
+      <div class="topic-head">
+        <h2 class="topic-title">Underweight Advice</h2>
+        <p class="topic-desc">Advice videos for healthy weight gain (nutrition + strength).</p>
+        <div class="topic-actions">
+          <button class="btn tip-video-btn" id="refreshBtn" type="button">Refresh (New set of 6)</button>
+        </div>
+        <div class="refresh-stamp" id="stamp" style="color:#777;font-size:12.5px;margin-top:4px;">Updated: -</div>
+      </div>
+
+      <div class="video-grid" id="grid">
+     
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top: 18px;">
+        <a href="tips.html" class="btn tip-video-btn" style="background:#333; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">Back to Tips</a>
+      </div>
+    </div>
+  </main>
+
+  <br>
+
+  <footer>
+      <p>Created by: <strong>[Ren Wenjie]</strong> | Student ID: <strong>[CST2209158]</strong></p>
+      <p>Last Edited: December 2025 | Sources: WHO, NHS</p>
+  </footer>
+
+<script>
+(function() {
+  const TOPIC = "underweight";
+  const TITLE_TEXT = "Underweight Advice";
+  const DESC_TEXT = "Advice videos for healthy weight gain (nutrition + strength).";
+  const POOL = ["5WwtFV0gPAo", "OqRvmJ2eyBA", "Yi3g7uNaFfo", "6faW7c_TyTU", "taWgHoAMWgE", "nAgZBJ9C3AI", "8gLhoJrT4AM", "6cv3QKTVRqo", "VppcKMNxNXw", "tlsRIgdmlqI", "ZR0EjeIrvi0", "7AAYPI_V7rs", "DSfoev51IhI", "_5dtuc-SgWg", "K4Ze-Sp6aUE"];
+  const PLACEHOLDER = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27640%27%20height%3D%27360%27%3E%0A%3Cdefs%3E%3ClinearGradient%20id%3D%27g%27%20x1%3D%270%27%20x2%3D%271%27%20y1%3D%270%27%20y2%3D%271%27%3E%0A%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23e8f5e9%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23c8e6c9%27/%3E%0A%3C/linearGradient%3E%3C/defs%3E%0A%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20fill%3D%27url%28%23g%29%27/%3E%0A%3Ccircle%20cx%3D%27320%27%20cy%3D%27160%27%20r%3D%2758%27%20fill%3D%27rgba%280%2C0%2C0%2C0.18%29%27/%3E%0A%3Cpolygon%20points%3D%27306%2C132%20306%2C188%20358%2C160%27%20fill%3D%27white%27/%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2780%25%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%27%20font-size%3D%2722%27%20font-weight%3D%27700%27%20fill%3D%27rgba%280%2C0%2C0%2C0.60%29%27%3EAdvice%20Video%3C/text%3E%0A%3Ctext%20x%3D%2750%25%27%20y%3D%2790%25%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%27%20font-size%3D%2716%27%20fill%3D%27rgba%280%2C0%2C0%2C0.50%29%27%3EOpen%20on%20YouTube%3C/text%3E%0A%3C/svg%3E";
+
+  function buildThumb(id) {
+    return "https://i.ytimg.com/vi/" + encodeURIComponent(id) + "/hqdefault.jpg";
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function pickNoRepeat(n) {
+    const pool = shuffle(POOL.slice());
+    let last = [];
+    try {
+      last = JSON.parse(sessionStorage.getItem("lastPicks_" + TOPIC) || "[]");
+      if (!Array.isArray(last)) last = [];
+    } catch (e) { last = []; }
+    const lastSet = new Set(last);
+
+    const chosen = [];
+    for (const id of pool) {
+      if (!lastSet.has(id)) {
+        chosen.push(id);
+        if (chosen.length === n) break;
+      }
+    }
+    if (chosen.length < n) {
+      for (const id of pool) {
+        if (!chosen.includes(id)) {
+          chosen.push(id);
+          if (chosen.length === n) break;
+        }
+      }
+    }
+    try { sessionStorage.setItem("lastPicks_" + TOPIC, JSON.stringify(chosen)); } catch (e) {}
+    return chosen;
+  }
+
+  async function getVideoTitle(videoId) {
+    const cacheKey = "ytTitle_" + videoId;
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) return cached;
+    } catch (e) {}
+
+    try {
+      const oembedUrl = "https://www.youtube.com/oembed?format=json&url=" +
+        encodeURIComponent("https://www.youtube.com/watch?v=" + videoId);
+      const res = await fetch(oembedUrl);
+      if (!res.ok) throw new Error("oEmbed failed: " + res.status);
+      const data = await res.json();
+      const title = (data && data.title) ? String(data.title) : "";
+      if (title) {
+        try { sessionStorage.setItem(cacheKey, title); } catch (e) {}
+        return title;
+      }
+    } catch (e) {}
+    return "";
+  }
+
+  function makeCard(id) {
+    const a = document.createElement("a");
+    a.className = "video-card";
+    a.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
+    a.target = "_blank";
+    a.rel = "noopener";
+
+    const img = document.createElement("img");
+    img.className = "video-thumb";
+    img.alt = "Video thumbnail";
+    img.src = buildThumb(id);
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = PLACEHOLDER;
+    };
+
+    const meta = document.createElement("div");
+    meta.className = "video-meta";
+    meta.innerHTML = `
+      <div class="video-card-title"></div>
+      <div class="video-card-sub">Open on YouTube</div>
+    `;
+    meta.querySelector(".video-card-title").innerText = "Loading title...";
+
+    a.appendChild(img);
+    a.appendChild(meta);
+    return a;
+  }
+
+  function render() {
+    const grid = document.getElementById("grid");
+    if (!grid) return;
+    const picks = pickNoRepeat(6);
+    grid.innerHTML = "";
+    picks.forEach(id => {
+      const card = makeCard(id);
+      grid.appendChild(card);
+      getVideoTitle(id).then(t => {
+        const el = card.querySelector(".video-card-title");
+        if (!el) return;
+        if (t) el.innerText = t;
+        else el.innerText = TITLE_TEXT + " (Advice)";
+      });
+    });
+
+    const stamp = document.getElementById("stamp");
+    if (stamp) stamp.innerText = "Updated: " + new Date().toLocaleString();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("refreshBtn");
+    if (btn) btn.addEventListener("click", render);
+    render();
+  });
+})();
+</script>
+
+</body>
+</html>

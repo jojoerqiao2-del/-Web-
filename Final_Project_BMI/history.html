@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - MyBody Index</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <div class="logo">MyBody Index</div>
+        <div class="menu">
+            <a href="index.html">Home</a>
+            <a href="calculator.html">Calculator</a>
+            <a href="history.html" style="font-weight: bold; text-decoration: underline;">History</a>
+            <a href="tips.html">Health Tips</a>
+        </div>
+    </nav>
+
+    <br>
+
+    <main>
+        <div class="card-container" style="max-width: 900px;">
+            
+            <div class="history-header">
+                <h2 class="history-title">Measurement History</h2>
+                <button class="history-clear-btn" onclick="clearHistory()">Clear</button>
+            </div>
+
+            <!-- Summary -->
+            <div id="history-stats" class="history-stats">
+                <!-- Filled by JS -->
+            </div>
+
+            <!-- Chart -->
+            <div class="history-chart-wrap">
+                <div class="history-chart-bar">
+                    <div class="history-chart-label">BMI trend</div>
+                    <div class="history-chart-controls">
+                        <label for="rangeSelect" class="history-range-label">Range</label>
+                        <select id="rangeSelect" class="history-range-select">
+                            <option value="all">All</option>
+                            <option value="30">Last 30 days</option>
+                            <option value="7">Last 7 days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="history-canvas-wrap">
+                    <canvas id="bmiChart" width="860" height="320" aria-label="BMI trend chart"></canvas>
+                    <div id="chartTooltip" class="chart-tooltip" style="display:none;"></div>
+                </div>
+
+                <div class="history-chart-note" id="historyChartNote">Click a point to view details.</div>
+            </div>
+
+            <!-- List -->
+            <div id="history-list" style="margin-top: 22px;"></div>
+
+        </div>
+    </main>
+
+    <!-- Modal (Details) -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 style="margin-top:0;">Record Details</h2>
+
+            <p><strong>Date:</strong> <span id="m-date">--</span></p>
+            <p><strong>BMI:</strong> <span id="m-bmi">--</span></p>
+            <p><strong>Status:</strong> <span id="m-status">--</span></p>
+            
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin-top: 20px;">
+                <strong>💡 Health Tip:</strong>
+                <p id="m-tip" style="margin: 5px 0 0 0; color: #555;">--</p>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <footer>
+        <p>Created by: <strong>[Ren Wenjie]</strong> | Student ID: <strong>[CST2209158]</strong></p>
+        <p>Last Edited: December 2025 | Sources: WHO, NHS</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
